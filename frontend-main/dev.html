@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Nexus - Developer Playground</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <style>
+        :root {
+            --primary: #2a2b38;
+            --secondary: #1f2029;
+            --accent: #5d5dff;
+            --text: #9498a4;
+            --white: #ffffff;
+            --success: #4CAF50;
+            --warning: #FFC107;
+            --error: #FF5252;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: var(--secondary);
+            color: var(--text);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        
+        .navbar {
+            background: var(--primary);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--white);
+        }
+
+        .dev-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            height: calc(100vh - 80px);
+        }
+
+        .code-section {
+            background: var(--primary);
+            border-radius: 15px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+        }
+
+        .language-select {
+            background: var(--secondary);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .code-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .code-editor {
+            flex-grow: 1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .CodeMirror {
+            height: 100% !important;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .analysis-section {
+            background: var(--primary);
+            border-radius: 15px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+
+        .agent-card {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .agent-card.active {
+            border: 2px solid var(--accent);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .agent-info h3 {
+            color: var(--white);
+            margin: 0;
+        }
+
+        .agent-info p {
+            font-size: 0.8rem;
+            margin: 0;
+        }
+
+        .analysis-result {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .metric-card {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+
+        .file-upload {
+            display: none;
+        }
+
+        .upload-btn {
+            background: var(--secondary);
+            color: var(--white);
+            border: 2px dashed var(--accent);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: var(--accent);
+            border-style: solid;
+        }
+
+        .error-message {
+            color: var(--error);
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .success-message {
+            color: var(--success);
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+        
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--primary);
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--secondary);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-text {
+            margin-top: 1rem;
+            color: var(--text);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .analysis-detail {
+            margin: 1rem 0;
+            line-height: 1.6;
+            color: var(--text);
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--secondary);
+            border-radius: 8px;
+        }
+        
+        .resources-section {
+            margin-top: 1rem;
+        }
+        
+        .resources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .resource-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--secondary);
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .resource-link:hover {
+            transform: translateX(5px);
+            color: var(--white);
+            background: var(--accent);
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="logo">AI<span>Nexus</span></a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profiles.html" class="nav-link">Profiles</a>
+                <a href="playground.html" class="nav-link">Playground</a>
+                <a href="#" class="nav-link">Development</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dev-container">
+        <div class="code-section">
+            <div class="code-header">
+                <select class="language-select" id="languageSelect">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                    <option value="csharp">C#</option>
+                </select>
+                <div class="code-actions">
+                    <button class="action-btn" id="uploadBtn">Upload File</button>
+                    <button class="action-btn" id="analyzeBtn">Analyze Code</button>
+                    <button class="action-btn" id="improveBtn">Improve Code</button>
+                    <button class="action-btn" id="debugBtn">Debug</button>
+                </div>
+            </div>
+            <input type="file" id="fileUpload" class="file-upload" accept=".js,.py,.java,.cpp,.cs">
+            <div id="codeEditor" class="code-editor"></div>
+        </div>
+
+        <div class="analysis-section">
+            <h2>AI Agents</h2>
+            <div class="agent-card" data-agent="architect">
+                <div class="agent-header">
+                    <img src="../frontend/assets/agents/archi.jpg" alt="Architect" class="agent-avatar">
+                    <div class="agent-info">
+                        <h3>Code Architect</h3>
+                        <p>Analyzes code structure and patterns</p>
+                    </div>
+                </div>
+            </div>
+            <div class="agent-card" data-agent="debugger">
+                <div class="agent-header">
+                    <img src="../frontend/assets/agents/debug.png" alt="Debugger" class="agent-avatar">
+                    <div class="agent-info">
+                        <h3>Debug Master</h3>
+                        <p>Identifies and fixes code issues</p>
+                    </div>
+                </div>
+            </div>
+            <div class="agent-card" data-agent="optimizer">
+                <div class="agent-header">
+                    <img src="../frontend/assets/agents/optimizer.png" alt="Optimizer" class="agent-avatar">
+                    <div class="agent-info">
+                        <h3>Code Optimizer</h3>
+                        <p>Improves code performance</p>
+                    </div>
+                </div>
+            </div>
+            <div id="analysisResults"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script>
+        let isLoading = false;
+
+        function showLoading() {
+            const analysisResults = document.getElementById('analysisResults');
+            analysisResults.innerHTML = `
+                <div class="loading-container animate__animated animate__fadeIn">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Processing your request...</p>
+                </div>
+            `;
+        }
+
+        function hideLoading() {
+            const loadingContainer = document.querySelector('.loading-container');
+            if (loadingContainer) {
+                loadingContainer.remove();
+            }
+        }
+        // Codemirror for accha indentation identification
+        const editor = CodeMirror(document.getElementById('codeEditor'), {
+            mode: 'javascript',
+            theme: 'monokai',
+            lineNumbers: true,
+            autofocus: true,
+            tabSize: 2,
+            indentWithTabs: false,
+            lineWrapping: true,
+            foldGutter: true,
+            gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            styleActiveLine: true
+        });
+
+        // code language changer
+        document.getElementById('languageSelect').addEventListener('change', (e) => {
+            const mode = e.target.value === 'python' ? 'python' :
+                        e.target.value === 'javascript' ? 'javascript' :
+                        'text/x-java';
+            editor.setOption('mode', mode);
+        });
+
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            document.getElementById('fileUpload').click();
+        });
+
+        document.getElementById('fileUpload').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                editor.setValue(e.target.result);
+            };
+            reader.readAsText(file);
+        });
+
+        document.querySelectorAll('.agent-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('active');
+            });
+        });
+
+        document.getElementById('analyzeBtn').addEventListener('click', async () => {
+            const code = editor.getValue();
+            const language = document.getElementById('languageSelect').value;
+            const activeAgents = Array.from(document.querySelectorAll('.agent-card.active'))
+                                    .map(card => card.dataset.agent);
+
+            if (activeAgents.length === 0) {
+                showMessage('Please select at least one AI agent', 'error');
+                return;
+            }
+
+            try {
+                const response = await analyzeCode(code, language, activeAgents);
+                displayAnalysisResults(response);
+            } catch (error) {
+                showMessage('Error analyzing code: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('improveBtn').addEventListener('click', async () => {
+            const code = editor.getValue();
+            const language = document.getElementById('languageSelect').value;
+
+            try {
+                const response = await improveCode(code, language);
+                editor.setValue(response.improvedCode);
+                showMessage('Code improved successfully', 'success');
+            } catch (error) {
+                showMessage('Error improving code: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('debugBtn').addEventListener('click', async () => {
+            const code = editor.getValue();
+            const language = document.getElementById('languageSelect').value;
+
+            try {
+                const response = await debugCode(code, language);
+                displayDebugResults(response);
+            } catch (error) {
+                showMessage('Error debugging code: ' + error.message, 'error');
+            }
+        });
+
+        // API calls VVI - pahale app.py & dev.py wala run kro for the local api
+        async function analyzeCode(code, language, agents) {
+            if (isLoading) return;
+            isLoading = true;
+            showLoading();
+            
+            try {
+                const response = await fetch('http://localhost:9000/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code, language, agents })
+                });
+                return await response.json();
+            } catch (error) {
+                throw error;
+            } finally {
+                isLoading = false;
+            }
+        }
+        
+        async function improveCode(code, language) {
+            if (isLoading) return;
+            isLoading = true;
+            showLoading();
+            
+            try {
+                const response = await fetch('http://localhost:9000/api/improve', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code, language })
+                });
+                return await response.json();
+            } catch (error) {
+                throw error;
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        async function debugCode(code, language) {
+            if (isLoading) return;
+            isLoading = true;
+            showLoading();
+            
+            try {
+                const response = await fetch('http://localhost:9000/api/debug', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code, language })
+                });
+                return await response.json();
+            } catch (error) {
+                throw error;
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        // Display results
+        function displayAnalysisResults(results) {
+            const analysisResults = document.getElementById('analysisResults');
+            analysisResults.innerHTML = '';
+        
+            Object.entries(results).forEach(([agent, analysis]) => {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'analysis-result animate__animated animate__fadeIn';
+                
+                let content = `
+                    <div class="agent-header">
+                        <img src="assets/agents/${agent}.avif" alt="${agent}" class="agent-avatar">
+                        <div class="agent-info">
+                            <h3>${agent.charAt(0).toUpperCase() + agent.slice(1)} Analysis</h3>
+                        </div>
+                    </div>
+                    <div class="analysis-content">
+                `;
+        
+                if (analysis.analysis) {
+                    content += `
+                        <div class="analysis-detail">
+                            <h4>Detailed Analysis</h4>
+                            <p>${analysis.analysis}</p>
+                        </div>
+                    `;
+                }
+        
+                if (analysis.metrics) {
+                    content += `
+                        <div class="metrics-section">
+                            <h4>Key Metrics</h4>
+                            <div class="metrics-grid">
+                                ${Object.entries(analysis.metrics).map(([metric, value]) => `
+                                    <div class="metric-card">
+                                        <div class="metric-header">
+                                            <span>${metric}</span>
+                                            <span class="metric-value">${value}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+        
+                if (analysis.suggestions && analysis.suggestions.length > 0) {
+                    content += `
+                        <div class="suggestions-section">
+                            <h4>Improvement Suggestions</h4>
+                            ${analysis.suggestions.map((suggestion, index) => `
+                                <div class="suggestion-item">
+                                    <div class="suggestion-number">${index + 1}</div>
+                                    <div class="suggestion-text">${suggestion}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+        
+                if (analysis.resources && analysis.resources.length > 0) {
+                    content += `
+                        <div class="resources-section">
+                            <h4>Learning Resources</h4>
+                            <div class="resources-list">
+                                ${analysis.resources.map(resource => `
+                                    <a href="${resource.url}" target="_blank" class="resource-link">
+                                        <span>${resource.title}</span>
+                                        <span>→</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+        
+                content += '</div>';
+                resultCard.innerHTML = content;
+                analysisResults.appendChild(resultCard);
+            });
+        }
+        
+
+        function displayDebugResults(results) {
+            const analysisResults = document.getElementById('analysisResults');
+            analysisResults.innerHTML = '';
+        
+            const debugCard = document.createElement('div');
+            debugCard.className = 'analysis-result animate__animated animate__fadeIn';
+            
+            let content = `
+                <h3>Debug Results</h3>
+                <div class="analysis-detail">
+                    <p>${results.summary || 'Analysis complete.'}</p>
+                </div>
+            `;
+            
+            if (results.issues && results.issues.length > 0) {
+                content += `
+                    <div class="issues-section">
+                        <h4>Found Issues</h4>
+                        ${results.issues.map(issue => `
+                            <div class="suggestion-item">
+                                <div class="issue-severity ${issue.severity}">${issue.severity}</div>
+                                <div class="issue-content">
+                                    <div class="issue-location">Line ${issue.line}</div>
+                                    <div class="issue-description">${issue.description}</div>
+                                    ${issue.suggestion ? `<div class="issue-suggestion">Suggestion: ${issue.suggestion}</div>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                content += '<div class="success-message">No issues found in the code.</div>';
+            }
+        
+            debugCard.innerHTML = content;
+            analysisResults.appendChild(debugCard);
+            hideLoading();
+        }
+
+        function showMessage(message, type) {
+            const analysisResults = document.getElementById('analysisResults');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message animate__animated animate__fadeIn`;
+            messageDiv.textContent = message;
+            
+            analysisResults.insertBefore(messageDiv, analysisResults.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+
+        // Sample code!!!!! final javascript meh hello world kaam aya XD
+        editor.setValue(`// Welcome to AI Nexus Developer Playground
+// Start coding or upload your file to begin analysis
+
+function example() {
+    console.log("Hello, World!");
+}
+`);
+    </script>
+</body>
+</html>

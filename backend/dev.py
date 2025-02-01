@@ -7,7 +7,6 @@ import re
 app = Flask(__name__)
 CORS(app)
 
-# Initialize AI agents with their specialties
 DEV_AGENTS = {
     "architect": {
         "name": "Code Architect",
@@ -64,7 +63,7 @@ Format your response as JSON with the following structure:
 def format_analysis_response(response_text):
     """Extract and format JSON response from AI output"""
     try:
-        # Find JSON content using regex
+        # Regex se idhar JSON context 
         json_match = re.search(r'\{[\s\S]*\}', response_text)
         if json_match:
             response_json = json.loads(json_match.group())

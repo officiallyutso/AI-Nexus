@@ -12,17 +12,14 @@ def format_response(response):
     """Format and clean the response with proper structure"""
     if not response or len(response.strip()) < 5:
         return "I apologize, but I couldn't generate a proper response. Please try again."
-    
-    # Remove any extra whitespace and normalize line endings
     response = response.strip()
     
-    # Handle bullet points and numbered lists
+    # bullet points and numbered lists ke liye spacing
     lines = response.split('\n')
     formatted_lines = []
     
     for line in lines:
         line = line.strip()
-        # Preserve bullet points and numbered lists
         if line.startswith(('- ', '• ', '* ', '1. ', '2. ', '3. ')):
             formatted_lines.append('\n\n' + line)
         # Add proper spacing for paragraphs
@@ -34,7 +31,6 @@ def format_response(response):
     
     formatted_response = ' '.join(formatted_lines)
     
-    # Ensure proper spacing between sections
     formatted_response = formatted_response.replace('\n\n\n\n', '\n\n\n')
     
     return formatted_response
