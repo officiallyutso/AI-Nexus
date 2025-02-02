@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Nexus - Blockchain Intelligence Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.css">
+    <link rel="stylesheet" href="../frontend/css/index.css">
+    
+    <style>
+        :root {
+            --primary: #2a2b38;
+            --secondary: #1f2029;
+            --accent: #5d5dff;
+            --accent-alt: #ff5d8f;
+            --text: #9498a4;
+            --white: #ffffff;
+            --gradient-1: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+            --gradient-2: linear-gradient(45deg, #2a2b38 0%, #1f2029 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--secondary);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(42, 43, 56, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.5rem 2rem;
+            background: rgba(42, 43, 56, 0.98);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+
+        .nav-link:hover {
+            color: var(--white);
+            background: rgba(93, 93, 255, 0.1);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 2rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-2);
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        .blockchain-grid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: 
+                linear-gradient(to right, rgba(93, 93, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(93, 93, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: perspective(500px) rotateX(60deg);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            margin-bottom: 2.5rem;
+            color: var(--text);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary {
+            background: var(--gradient-1);
+            color: var(--white);
+        }
+
+        .cta-secondary {
+            background: rgba(93, 93, 255, 0.1);
+            color: var(--white);
+            border: 1px solid var(--accent);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(93, 93, 255, 0.3);
+        }
+
+        .stats-bar {
+            background: rgba(42, 43, 56, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            margin-top: -5rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .stats-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            color: var(--white);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .features {
+            padding: 8rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--white);
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(42, 43, 56, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(93, 93, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .blockchain-cards {
+            padding: 4rem 2rem;
+            background: var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chain-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            padding: 2rem 0;
+            scrollbar-width: none;
+        }
+
+        .chain-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .block-card {
+            min-width: 300px;
+            background: var(--secondary);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(93, 93, 255, 0.1);
+            position: relative;
+        }
+
+        .block-card::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background: var(--accent);
+            right: -50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .block-card:last-child::before {
+            display: none;
+        }
+
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(93, 93, 255, 0.1);
+        }
+
+        .block-hash {
+            font-family: monospace;
+            color: var(--accent);
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding-top: 6rem;
+            }
+
+            .cta-container {
+                flex-direction: column;
+            }
+
+            .stats-bar {
+                margin-top: 0;
+            }
+        }
+
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: floatAnimation 20s infinite linear;
+        }
+
+        @keyframes floatAnimation {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(100px, -100px) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="logo">
+                AI<span>Nexus</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profiles.html" class="nav-link">Profiles</a>
+                <a href="playground.html" class="nav-link">Playground</a>
+                <a href="dev.html" class="nav-link">Developement</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="floating-elements" id="floatingElements"></div>
+
+    <div class="hero">
+        <div class="blockchain-grid"></div>
+        <div class="hero-content">
+            <h1 class="hero-title animate__animated animate__fadeIn">
+                The Future of <span style="color: var(--accent)">AI</span> & <span style="color: var(--accent-alt)">Blockchain</span>
+            </h1>
+            <p class="hero-subtitle animate__animated animate__fadeIn animate__delay-1s">
+                Experience the convergence of artificial intelligence and blockchain technology. Our platform combines advanced AI agents with decentralized systems to create a secure, transparent, and intelligent ecosystem.
+            </p>
+            <div class="cta-container">
+                <a href="playground.html" class="cta-button cta-primary animate__animated animate__fadeIn animate__delay-2s">
+                    Start Exploring
+                </a>
+                <a href="profiles.html" class="cta-button cta-secondary animate__animated animate__fadeIn animate__delay-2s">
+                    View AI Agents
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stats-grid">
+            <div class="stat-item" data-aos="fade-up">
+                <h3>100K+</h3>
+                <p>Active Users</p>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                <h3>1M+</h3>
+                <p>Transactions</p>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                <h3>50+</h3>
+                <p>AI Agents</p>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                <h3>99.9%</h3>
+                <p>Uptime</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="features">
+        <h2 class="section-title" data-aos="fade-up">Why Choose AINexus?</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Advanced AI</h3>
+                <p>Access cutting-edge AI models trained on diverse datasets, capable of understanding complex patterns and generating innovative solutions.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3>Blockchain Security</h3>
+                <p>Every interaction is secured by blockchain technology, ensuring transparency and immutability of all transactions and data exchanges.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h3>Decentralized Network</h3>
+                <p>Built on a distributed network of nodes, ensuring high availability and resistance to single points of failure.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Smart Contracts</h3>
+                <p>Automated, secure, and transparent execution of agreements between users and AI agents through blockchain-powered smart contracts.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="blockchain-cards">
+        <h2 class="section-title" data-aos="fade-up">Latest Blockchain Activity</h2>
+        <div class="chain-container" data-aos="fade-left">
+            <div class="block-card">
+                <div class="block-header">
+                    <span>Block #1842391</span>
+                    <span>2 mins ago</span>
+                </div>
+                <div class="block-hash">0x7d8f...</div>
+                <p>AI Model Training Completed</p>
+                <p>Tokens: 25,000</p>
+            </div>
+            <div class="block-card">
+                <div class="block-header">
+                    <span>Block #1842390</span>
+                    <span>5 mins ago</span>
+                </div>
+                <div class="block-hash">0x9e2a...</div>
+                <p>New Agent Deployment</p>
+                <p>Tokens: 15,000</p>
+            </div>
+            <div class="block-card">
+                <div class="block-header">
+                    <span>Block #1842389</span>
+                    <span>8 mins ago</span>
+                </div>
+                <div class="block-hash">0x3b4c...</div>
+                <p>Smart Contract Execution</p>
+                <p>Tokens: 8,500</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="background: var(--primary);">
+        <h2 class="section-title" data-aos="fade-up">Latest Updates</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up">
+                <div class="feature-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3>New AI Models</h3>
+                <p>We've just deployed 5 new specialized AI models, enhancing our capabilities in natural language processing and computer vision.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Performance Boost</h3>
+                <p>50% reduction in response time and 30% improvement in accuracy across all AI agents through our latest optimization updates.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Enhanced Security</h3>
+                <p>Implementation of advanced encryption protocols and enhanced smart contract auditing for maximum platform security.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 AINexus. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tippy.js/6.3.7/tippy.umd.min.js"></script>
+
+    <script>
+        // AOS keliye time delay
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        const floatingElements = document.getElementById('floatingElements');
+        for (let i = 0; i < 30; i++) {
+            const element = document.createElement('div');
+            element.className = 'floating-element';
+            element.style.width = Math.random() * 10 + 'px';
+            element.style.height = element.style.width;
+            element.style.left = Math.random() * 100 + '%';
+            element.style.top = Math.random() * 100 + '%';
+            element.style.animationDuration = (Math.random() * 20 + 10) + 's';
+            element.style.animationDelay = (Math.random() * 20) + 's';
+            floatingElements.appendChild(element);
+        }
+
+        tippy('[data-tippy-content]', {
+            theme: 'blockchain',
+            animation: 'shift-away'
+        });
+
+        // SMOOTH SCROLLINGGGGGG YAYAYAYAYAY
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
